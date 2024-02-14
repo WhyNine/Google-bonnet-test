@@ -1,0 +1,46 @@
+Start from 64bit Lite
+
+Note: push button is on gpio 23
+# ktd2026B is address 0x31 - see leds.pl
+
+In config.txt, enable i2c and i2s, disable audio
+sudo raspi-config --> Interfaces --> I2C
+
+sudo apt-get install libi2c-dev i2c-tools build-essential
+i2cdetect -y 1  --> 1a should be shown
+i2cget -y 1 0x1a 0xfe w   --> should read 0xec10
+
+sudo mkdir /mnt/simon
+mkdir software
+
+Add to fstab:
+//LS520DEC1/simon      /mnt/simon  cifs	_netdev,username=simon,password=k7YTeyr8cbz9OzzyLomG,nofail,dir_mode=0777,file_mode=0777  0       0
+
+
+cpan
+Install these modules:
+Device::I2C
+Fcntl
+
+Copy all .sh files and chmod +x them
+
+Follow instructions on https://learn.adafruit.com/adafruit-i2s-mems-microphone-breakout/raspberry-pi-wiring-test:
+sudo apt install python3-pip
+cd ~
+sudo pip3 install --upgrade adafruit-python-shell
+wget https://raw.githubusercontent.com/adafruit/Raspberry-Pi-Installer-Scripts/master/i2smic.py
+sudo python3 i2smic.py
+
+perl upload.pl record
+arecord -c2 -r 48000 -f S16_LE -t wav -V stereo -v recording.wav
+
+# Playing audio does not work yet
+
+
+Try:
+go back to original google driver
+go back to original google complete build then do updates
+write esp32 i2c monitor to see what is happening
+
+
+Try adding option to "upload record" to change sample frequency 48/44.1kHz?
